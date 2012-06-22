@@ -225,7 +225,7 @@ class RedisRoster(Roster):
         r = self.jug.redis
         key = '%sconnections:%s' % (self.key_prefix, user_id)
         r.sadd(key, data['session_id'])
-        if r.scard(key) == 0:
+        if r.scard(key) == 1:
             self.on_signed_in(user_id)
         r.sadd(self.key_prefix + 'online-users', user_id)
 
@@ -235,4 +235,4 @@ class RedisRoster(Roster):
         r.srem(key, data['session_id'])
         if r.scard(key) == 0:
             self.on_signed_out(user_id)
-            r.sadd(self.key_prefix + 'online-users', user_id)
+            r.srem(self.key_prefix + 'online-users', user_id)
